@@ -1,0 +1,41 @@
+version: "3"
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: samp-img1
+    container_name: samp-con1
+    restart: unless-stopped
+    working_dir: /var/www/html/sammy-php
+    depends_on:
+      - db
+    networks: 
+      - saminet
+    ports:
+      - 8088:80
+
+  db:
+    image: mysql:8.0
+    env_file: .env
+    container_name: samp-dbcon1
+    tty: true
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: student 
+      MYSQL_PASSWORD: S@mi1234
+      MYSQL_USER: sammy_user
+      MYSQL_ROOT_PASSWORD: S@mi1234
+      SERVICE_NAME: mysql
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    ports: 
+      - 33066:3306
+    expose:
+      - 3306
+    networks:
+      - saminet
+
+networks:
+  saminet:
+    driver: bridge
